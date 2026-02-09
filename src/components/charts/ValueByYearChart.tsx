@@ -7,39 +7,43 @@ interface Props {
   stats: DashboardStats;
 }
 
-export function SalesByYearChart({ stats }: Props) {
-  const data = Object.entries(stats.contractsByYear)
-    .map(([year, count]) => ({
+export function ValueByYearChart({ stats }: Props) {
+  const data = Object.entries(stats.valueByYear)
+    .map(([year, value]) => ({
       year: Number(year),
-      count,
-      value: stats.valueByYear[Number(year)] ?? 0,
+      value,
     }))
     .sort((a, b) => a.year - b.year);
 
   if (data.length === 0) {
-    return <EmptyChart message="Nenhum dado para exibir" />;
+    return (
+      <div className="bg-navy-800 rounded-xl border border-navy-600 p-5 flex items-center justify-center h-80">
+        <p className="text-gray-500 text-sm">Nenhum dado para exibir</p>
+      </div>
+    );
   }
 
   return (
     <div className="bg-navy-800 rounded-xl border border-navy-600 p-5">
-      <h3 className="text-sm font-semibold text-white mb-4">Contratos por Ano</h3>
+      <h3 className="text-sm font-semibold text-white mb-4">Valor de Vendas por Ano</h3>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} barSize={40}>
             <CartesianGrid strokeDasharray="3 3" stroke="#1d3a66" />
             <XAxis dataKey="year" stroke="#64748b" fontSize={12} />
-            <YAxis stroke="#64748b" fontSize={12} />
+            <YAxis
+              stroke="#64748b"
+              fontSize={12}
+              tickFormatter={(v: number) => `${(v / 1_000_000).toFixed(1)}M`}
+            />
             <Tooltip
               contentStyle={{ background: '#101e36', border: '1px solid #1d3a66', borderRadius: 8 }}
               labelStyle={{ color: '#e2e8f0' }}
               itemStyle={{ color: '#e2e8f0' }}
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              formatter={(value: any, name: any) => {
-                if (name === 'count') return [value, 'Contratos'];
-                return [formatCurrency(value), 'Valor'];
-              }}
+              formatter={(value: any) => [formatCurrency(value), 'Valor']}
             />
-            <Bar dataKey="count" name="count" radius={[4, 4, 0, 0]}>
+            <Bar dataKey="value" name="value" radius={[4, 4, 0, 0]}>
               {data.map(entry => (
                 <Cell key={entry.year} fill={YEAR_COLORS[entry.year] ?? '#d4af37'} />
               ))}
@@ -58,14 +62,6 @@ export function SalesByYearChart({ stats }: Props) {
           </div>
         ))}
       </div>
-    </div>
-  );
-}
-
-function EmptyChart({ message }: { message: string }) {
-  return (
-    <div className="bg-navy-800 rounded-xl border border-navy-600 p-5 flex items-center justify-center h-80">
-      <p className="text-gray-500 text-sm">{message}</p>
     </div>
   );
 }
