@@ -1,37 +1,46 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { formatCurrency, formatPercent } from '../../utils/formatters';
+import { CHART_COLORS } from '../../utils/colors';
 
-interface Props {
-  directValue: number;
-  brokerValue: number;
+interface EmpresaData {
+  empresa: string;
+  value: number;
 }
 
-export function DirectSalesPieChart({ directValue, brokerValue }: Props) {
-  const data = [
-    { name: 'Vendas Diretas', value: directValue },
-    { name: 'Via Imobiliária', value: brokerValue },
-  ];
+interface Props {
+  empresas: EmpresaData[];
+}
 
-  const colors = ['#2dd4bf', '#d4af37'];
+export function EmpresaPieChart({ empresas }: Props) {
+  const total = empresas.reduce((s, e) => s + e.value, 0);
+
+  if (total === 0) {
+    return (
+      <div className="bg-navy-800 rounded-xl border border-navy-600 p-5 flex items-center justify-center h-80">
+        <p className="text-gray-500 text-sm">Nenhum dado para exibir</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-navy-800 rounded-xl border border-navy-600 p-5">
-      <h3 className="text-sm font-semibold text-white mb-4">Distribuição de Vendas</h3>
+      <h3 className="text-sm font-semibold text-white mb-4">Distribuição por Empresa</h3>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
-              data={data}
+              data={empresas}
               cx="50%"
               cy="50%"
               innerRadius={60}
               outerRadius={90}
               paddingAngle={3}
               dataKey="value"
+              nameKey="empresa"
               strokeWidth={0}
             >
-              {data.map((_, i) => (
-                <Cell key={i} fill={colors[i]} />
+              {empresas.map((_, i) => (
+                <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
               ))}
             </Pie>
             <Tooltip
@@ -43,12 +52,12 @@ export function DirectSalesPieChart({ directValue, brokerValue }: Props) {
           </PieChart>
         </ResponsiveContainer>
       </div>
-      <div className="flex justify-center gap-6">
-        {data.map((d, i) => (
-          <div key={d.name} className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ background: colors[i] }} />
+      <div className="flex justify-center gap-6 flex-wrap">
+        {empresas.map((e, i) => (
+          <div key={e.empresa} className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full" style={{ background: CHART_COLORS[i % CHART_COLORS.length] }} />
             <span className="text-xs text-gray-400">
-              {d.name}: {formatPercent((d.value / (directValue + brokerValue)) * 100)}
+              {e.empresa}: {formatPercent((e.value / total) * 100)}
             </span>
           </div>
         ))}

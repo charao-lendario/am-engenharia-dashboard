@@ -6,8 +6,8 @@ import { ValueByYearChart } from '../charts/ValueByYearChart';
 import { MonthlyTrendChart } from '../charts/MonthlyTrendChart';
 
 export function OverviewView() {
-  const { contracts } = useFilteredData();
-  const stats = useDashboardStats(contracts);
+  const { invoices } = useFilteredData();
+  const stats = useDashboardStats(invoices);
 
   return (
     <div className="space-y-6">

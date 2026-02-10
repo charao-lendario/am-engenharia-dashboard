@@ -2,10 +2,10 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { FilterProvider } from './context/FilterContext';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { OverviewView } from './components/views/OverviewView';
-import { ClientAnalysisView } from './components/views/ClientAnalysisView';
-import { ClientsNotReturningView } from './components/views/ClientsNotReturningView';
-import { AgencyRankingView } from './components/views/AgencyRankingView';
-import { DirectSalesView } from './components/views/DirectSalesView';
+import { FaturamentoView } from './components/views/FaturamentoView';
+import { ClientesView } from './components/views/ClientesView';
+import { AtividadesView } from './components/views/AtividadesView';
+import { EmpresasView } from './components/views/EmpresasView';
 import { AllContractsView } from './components/views/AllContractsView';
 
 export default function App() {
@@ -15,11 +15,11 @@ export default function App() {
         <Routes>
           <Route element={<DashboardLayout />}>
             <Route path="/" element={<OverviewView />} />
-            <Route path="/clientes" element={<ClientAnalysisView />} />
-            <Route path="/nao-retornaram" element={<ClientsNotReturningView />} />
-            <Route path="/imobiliarias" element={<AgencyRankingView />} />
-            <Route path="/vendas-diretas" element={<DirectSalesView />} />
-            <Route path="/contratos" element={<AllContractsView />} />
+            <Route path="/faturamento" element={<FaturamentoView />} />
+            <Route path="/clientes" element={<ClientesView />} />
+            <Route path="/atividades" element={<AtividadesView />} />
+            <Route path="/empresas" element={<EmpresasView />} />
+            <Route path="/notas" element={<AllContractsView />} />
           </Route>
         </Routes>
       </FilterProvider>

@@ -9,15 +9,15 @@ import {
   type SortingState,
 } from '@tanstack/react-table';
 import { useFilteredData } from '../../hooks/useFilteredData';
-import { formatCurrency, formatDate, formatArea } from '../../utils/formatters';
+import { formatCurrency, formatDate } from '../../utils/formatters';
 import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
-import type { Contract } from '../../types';
+import type { Invoice } from '../../types';
 
-const col = createColumnHelper<Contract>();
+const col = createColumnHelper<Invoice>();
 
 const columns = [
-  col.accessor('contractNumber', {
-    header: 'Contrato',
+  col.accessor('nfsNumber', {
+    header: 'NFS-e',
     cell: info => <span className="text-white font-medium">{info.getValue()}</span>,
   }),
   col.accessor('date', {
@@ -28,23 +28,25 @@ const columns = [
     header: 'Cliente',
     cell: info => <span className="text-white">{info.getValue()}</span>,
   }),
-  col.accessor('broker', {
-    header: 'Corretor/Imob.',
-    cell: info => info.getValue() || <span className="text-teal">Direta</span>,
+  col.accessor('empresa', {
+    header: 'Empresa',
   }),
-  col.accessor('empreendimento', {
-    header: 'Empreendimento',
+  col.accessor('atividade', {
+    header: 'Atividade',
   }),
   col.accessor('totalValue', {
-    header: 'Valor',
+    header: 'Valor NF',
     cell: info => <span className="text-gold-400">{formatCurrency(info.getValue())}</span>,
   }),
-  col.accessor('area', {
-    header: 'Área',
-    cell: info => formatArea(info.getValue()),
+  col.accessor('valorISS', {
+    header: 'ISS',
+    cell: info => formatCurrency(info.getValue()),
   }),
-  col.accessor('unit', {
-    header: 'Unidade',
+  col.accessor('retido', {
+    header: 'Retido',
+    cell: info => info.getValue()
+      ? <span className="text-teal text-xs font-medium">SIM</span>
+      : <span className="text-gray-500 text-xs">NÃO</span>,
   }),
   col.accessor('year', {
     header: 'Ano',
@@ -52,17 +54,17 @@ const columns = [
   col.accessor('cancelled', {
     header: 'Status',
     cell: info => info.getValue()
-      ? <span className="text-coral text-xs font-medium bg-coral/10 px-2 py-0.5 rounded">Cancelado</span>
-      : <span className="text-emerald text-xs font-medium bg-emerald/10 px-2 py-0.5 rounded">Ativo</span>,
+      ? <span className="text-coral text-xs font-medium bg-coral/10 px-2 py-0.5 rounded">Cancelada</span>
+      : <span className="text-emerald text-xs font-medium bg-emerald/10 px-2 py-0.5 rounded">Normal</span>,
   }),
 ];
 
 export function AllContractsView() {
-  const { contracts } = useFilteredData();
+  const { invoices } = useFilteredData();
   const [sorting, setSorting] = useState<SortingState>([{ id: 'date', desc: true }]);
 
   const table = useReactTable({
-    data: contracts,
+    data: invoices,
     columns,
     state: { sorting },
     onSortingChange: setSorting,
@@ -72,14 +74,14 @@ export function AllContractsView() {
     initialState: { pagination: { pageSize: 20 } },
   });
 
-  const totalValue = useMemo(() => contracts.reduce((s, c) => s + c.totalValue, 0), [contracts]);
+  const totalValue = useMemo(() => invoices.reduce((s, i) => s + i.totalValue, 0), [invoices]);
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">Todos os Contratos</h2>
+        <h2 className="text-xl font-bold text-white">Todas as NFS-e</h2>
         <div className="text-xs text-gray-400">
-          {contracts.length} contratos | {formatCurrency(totalValue)}
+          {invoices.length} NFS-e | {formatCurrency(totalValue)}
         </div>
       </div>
 

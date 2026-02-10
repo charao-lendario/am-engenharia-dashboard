@@ -3,8 +3,8 @@ import type { FilterState, FilterAction } from '../types';
 
 const initialState: FilterState = {
   years: [],
-  empreendimentos: [],
-  brokers: [],
+  empresas: [],
+  clientes: [],
   includeCancelled: false,
 };
 
@@ -18,22 +18,22 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
     }
     case 'SET_YEARS':
       return { ...state, years: action.years };
-    case 'TOGGLE_EMPREENDIMENTO': {
-      const empreendimentos = state.empreendimentos.includes(action.empreendimento)
-        ? state.empreendimentos.filter(e => e !== action.empreendimento)
-        : [...state.empreendimentos, action.empreendimento];
-      return { ...state, empreendimentos };
+    case 'TOGGLE_EMPRESA': {
+      const empresas = state.empresas.includes(action.empresa)
+        ? state.empresas.filter(e => e !== action.empresa)
+        : [...state.empresas, action.empresa];
+      return { ...state, empresas };
     }
-    case 'SET_EMPREENDIMENTOS':
-      return { ...state, empreendimentos: action.empreendimentos };
-    case 'TOGGLE_BROKER': {
-      const brokers = state.brokers.includes(action.broker)
-        ? state.brokers.filter(b => b !== action.broker)
-        : [...state.brokers, action.broker];
-      return { ...state, brokers };
+    case 'SET_EMPRESAS':
+      return { ...state, empresas: action.empresas };
+    case 'TOGGLE_CLIENTE': {
+      const clientes = state.clientes.includes(action.cliente)
+        ? state.clientes.filter(c => c !== action.cliente)
+        : [...state.clientes, action.cliente];
+      return { ...state, clientes };
     }
-    case 'SET_BROKERS':
-      return { ...state, brokers: action.brokers };
+    case 'SET_CLIENTES':
+      return { ...state, clientes: action.clientes };
     case 'TOGGLE_CANCELLED':
       return { ...state, includeCancelled: !state.includeCancelled };
     case 'RESET':

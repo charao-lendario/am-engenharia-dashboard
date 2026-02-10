@@ -1,86 +1,79 @@
-import type { Contract, AgencyRanking } from '../types';
+import type { Invoice, ClientRanking } from '../types';
 
-export function groupByYear(contracts: Contract[]): Record<number, Contract[]> {
-  return contracts.reduce((acc, c) => {
-    (acc[c.year] ??= []).push(c);
+export function groupByYear(invoices: Invoice[]): Record<number, Invoice[]> {
+  return invoices.reduce((acc, i) => {
+    (acc[i.year] ??= []).push(i);
     return acc;
-  }, {} as Record<number, Contract[]>);
+  }, {} as Record<number, Invoice[]>);
 }
 
-export function clientsByYear(contracts: Contract[]): Record<number, Set<string>> {
-  const byYear = groupByYear(contracts);
+export function clientsByYear(invoices: Invoice[]): Record<number, Set<string>> {
+  const byYear = groupByYear(invoices);
   const result: Record<number, Set<string>> = {};
-  for (const [year, cs] of Object.entries(byYear)) {
-    result[Number(year)] = new Set(cs.map(c => c.clientId));
+  for (const [year, invs] of Object.entries(byYear)) {
+    result[Number(year)] = new Set(invs.map(i => i.clientCnpj));
   }
   return result;
 }
 
-export function clientsInANotB(contracts: Contract[], yearA: number, yearB: number): Contract[] {
-  const byYear = clientsByYear(contracts);
+export function clientsInANotB(invoices: Invoice[], yearA: number, yearB: number): Invoice[] {
+  const byYear = clientsByYear(invoices);
   const clientsA = byYear[yearA] ?? new Set();
   const clientsB = byYear[yearB] ?? new Set();
-  const notReturned = new Set([...clientsA].filter(id => !clientsB.has(id)));
+  const notReturned = new Set([...clientsA].filter(cnpj => !clientsB.has(cnpj)));
 
-  // Return the contracts from yearA for clients that didn't return in yearB
-  return contracts.filter(c => c.year === yearA && notReturned.has(c.clientId));
+  return invoices.filter(i => i.year === yearA && notReturned.has(i.clientCnpj));
 }
 
-function shortenBrokerName(name: string): string {
-  if (!name) return 'Direta';
-  // Take only the first word/name
-  const first = name.split(/[\s-]/)[0];
-  // Capitalize first letter
-  return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
-}
+export function clientRanking(invoices: Invoice[]): ClientRanking[] {
+  const active = invoices.filter(i => !i.cancelled);
+  const clientMap = new Map<string, { cnpj: string; count: number; value: number }>();
 
-export function agencyRanking(contracts: Contract[]): AgencyRanking[] {
-  const active = contracts.filter(c => !c.cancelled);
-  const brokerMap = new Map<string, { count: number; value: number }>();
-
-  for (const c of active) {
-    const name = c.isDirect || !c.broker ? 'Direta' : shortenBrokerName(c.broker);
-    const entry = brokerMap.get(name) ?? { count: 0, value: 0 };
+  for (const i of active) {
+    const name = i.clientName || 'Desconhecido';
+    const entry = clientMap.get(name) ?? { cnpj: i.clientCnpj, count: 0, value: 0 };
     entry.count++;
-    entry.value += c.totalValue;
-    brokerMap.set(name, entry);
+    entry.value += i.totalValue;
+    clientMap.set(name, entry);
   }
 
-  return Array.from(brokerMap.entries())
-    .map(([broker, { count, value }]) => ({
-      broker,
-      contractCount: count,
+  return Array.from(clientMap.entries())
+    .map(([client, { cnpj, count, value }]) => ({
+      client,
+      cnpj,
+      invoiceCount: count,
       totalValue: value,
       avgValue: value / count,
     }))
     .sort((a, b) => b.totalValue - a.totalValue);
 }
 
-export function directSalesSummary(contracts: Contract[]) {
-  const active = contracts.filter(c => !c.cancelled);
-  const direct = active.filter(c => c.isDirect);
-  const totalValue = active.reduce((s, c) => s + c.totalValue, 0);
-  const directValue = direct.reduce((s, c) => s + c.totalValue, 0);
+export function empresaSummary(invoices: Invoice[]) {
+  const active = invoices.filter(i => !i.cancelled);
+  const empresaMap = new Map<string, { count: number; value: number; iss: number; invoices: Invoice[] }>();
 
-  return {
-    count: direct.length,
-    total: active.length,
-    value: directValue,
-    totalValue,
-    percent: totalValue > 0 ? (directValue / totalValue) * 100 : 0,
-    percentCount: active.length > 0 ? (direct.length / active.length) * 100 : 0,
-    contracts: direct,
-  };
+  for (const i of active) {
+    const entry = empresaMap.get(i.empresa) ?? { count: 0, value: 0, iss: 0, invoices: [] };
+    entry.count++;
+    entry.value += i.totalValue;
+    entry.iss += i.valorISS;
+    entry.invoices.push(i);
+    empresaMap.set(i.empresa, entry);
+  }
+
+  return Array.from(empresaMap.entries())
+    .map(([empresa, data]) => ({ empresa, ...data }))
+    .sort((a, b) => b.value - a.value);
 }
 
-export function monthlyTrend(contracts: Contract[]) {
+export function monthlyTrend(invoices: Invoice[]) {
   const map = new Map<string, { month: number; year: number; count: number; value: number }>();
 
-  for (const c of contracts) {
-    const key = `${c.year}-${String(c.month).padStart(2, '0')}`;
-    const entry = map.get(key) ?? { month: c.month, year: c.year, count: 0, value: 0 };
+  for (const i of invoices) {
+    const key = `${i.year}-${String(i.month).padStart(2, '0')}`;
+    const entry = map.get(key) ?? { month: i.month, year: i.year, count: 0, value: 0 };
     entry.count++;
-    entry.value += c.totalValue;
+    entry.value += i.totalValue;
     map.set(key, entry);
   }
 
@@ -89,6 +82,6 @@ export function monthlyTrend(contracts: Contract[]) {
   );
 }
 
-export function uniqueValues<T>(contracts: Contract[], key: keyof Contract): T[] {
-  return [...new Set(contracts.map(c => c[key]))] as T[];
+export function uniqueValues<T>(invoices: Invoice[], key: keyof Invoice): T[] {
+  return [...new Set(invoices.map(i => i[key]))] as T[];
 }

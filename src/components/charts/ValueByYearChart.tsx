@@ -25,7 +25,7 @@ export function ValueByYearChart({ stats }: Props) {
 
   return (
     <div className="bg-navy-800 rounded-xl border border-navy-600 p-5">
-      <h3 className="text-sm font-semibold text-white mb-4">Valor de Vendas por Ano</h3>
+      <h3 className="text-sm font-semibold text-white mb-4">Faturamento por Ano</h3>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} barSize={40}>
@@ -51,7 +51,7 @@ export function ValueByYearChart({ stats }: Props) {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <div className="flex justify-center gap-6 mt-3">
+      <div className="flex justify-center gap-4 mt-3 flex-wrap">
         {data.map(d => (
           <div key={d.year} className="text-center">
             <div className="flex items-center gap-1.5">

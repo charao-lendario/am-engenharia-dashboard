@@ -6,11 +6,11 @@ import { RotateCcw, EyeOff, Eye } from 'lucide-react';
 
 export function FilterBar() {
   const { state, dispatch } = useFilterContext();
-  const { allYears, allEmpreendimentos, allBrokers } = useFilteredData();
+  const { allYears, allEmpresas, allClientes } = useFilteredData();
 
   const hasFilters = state.years.length > 0 ||
-    state.empreendimentos.length > 0 ||
-    state.brokers.length > 0 ||
+    state.empresas.length > 0 ||
+    state.clientes.length > 0 ||
     state.includeCancelled;
 
   return (
@@ -18,18 +18,18 @@ export function FilterBar() {
       <div className="flex flex-wrap items-center gap-3">
         <YearFilter years={allYears} selected={state.years} />
         <MultiSelectFilter
-          label="Empreendimento"
-          options={allEmpreendimentos}
-          selected={state.empreendimentos}
-          onToggle={(v) => dispatch({ type: 'TOGGLE_EMPREENDIMENTO', empreendimento: v })}
-          onClear={() => dispatch({ type: 'SET_EMPREENDIMENTOS', empreendimentos: [] })}
+          label="Empresa"
+          options={allEmpresas}
+          selected={state.empresas}
+          onToggle={(v) => dispatch({ type: 'TOGGLE_EMPRESA', empresa: v })}
+          onClear={() => dispatch({ type: 'SET_EMPRESAS', empresas: [] })}
         />
         <MultiSelectFilter
-          label="Imobiliária"
-          options={allBrokers}
-          selected={state.brokers}
-          onToggle={(v) => dispatch({ type: 'TOGGLE_BROKER', broker: v })}
-          onClear={() => dispatch({ type: 'SET_BROKERS', brokers: [] })}
+          label="Cliente"
+          options={allClientes}
+          selected={state.clientes}
+          onToggle={(v) => dispatch({ type: 'TOGGLE_CLIENTE', cliente: v })}
+          onClear={() => dispatch({ type: 'SET_CLIENTES', clientes: [] })}
         />
         <button
           onClick={() => dispatch({ type: 'TOGGLE_CANCELLED' })}
@@ -40,7 +40,7 @@ export function FilterBar() {
           }`}
         >
           {state.includeCancelled ? <Eye size={14} /> : <EyeOff size={14} />}
-          Cancelados
+          Canceladas
         </button>
         {hasFilters && (
           <button

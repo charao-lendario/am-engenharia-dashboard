@@ -13,13 +13,7 @@ export function Header({ onToggleSidebar }: HeaderProps) {
       >
         <Menu size={24} />
       </button>
-      <div className="flex items-center gap-3">
-        <img src="/logo.png" alt="Grandezza" className="h-8 w-auto" />
-        <div>
-          <h1 className="text-lg font-bold text-white leading-tight">Grandezza</h1>
-          <p className="text-xs text-gray-400 leading-tight">Dashboard de Vendas</p>
-        </div>
-      </div>
+      <img src="/logo.webp" alt="AM Engenharia" className="h-16 w-auto" />
     </header>
   );
 }

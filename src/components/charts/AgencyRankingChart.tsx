@@ -1,36 +1,42 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import type { AgencyRanking } from '../../types';
+import type { ClientRanking } from '../../types';
 import { formatCurrency } from '../../utils/formatters';
 
 interface Props {
-  data: AgencyRanking[];
+  data: ClientRanking[];
 }
 
-export function AgencyRankingChart({ data }: Props) {
+export function ClientRankingChart({ data }: Props) {
   const chartData = data.slice(0, 10);
 
   if (chartData.length === 0) {
     return (
       <div className="bg-navy-800 rounded-xl border border-navy-600 p-5 flex items-center justify-center h-80">
-        <p className="text-gray-500 text-sm">Nenhuma imobiliária encontrada</p>
+        <p className="text-gray-500 text-sm">Nenhum cliente encontrado</p>
       </div>
     );
   }
 
+  // Shorten long names for chart display
+  const shortened = chartData.map(d => ({
+    ...d,
+    shortName: d.client.length > 25 ? d.client.slice(0, 22) + '...' : d.client,
+  }));
+
   return (
     <div className="bg-navy-800 rounded-xl border border-navy-600 p-5">
-      <h3 className="text-sm font-semibold text-white mb-4">Ranking por Valor Total</h3>
+      <h3 className="text-sm font-semibold text-white mb-4">Top 10 Clientes por Valor Total</h3>
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} layout="vertical" margin={{ left: 10 }}>
+          <BarChart data={shortened} layout="vertical" margin={{ left: 10 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#1d3a66" />
             <XAxis type="number" stroke="#64748b" fontSize={10} tickFormatter={(v) => `R$${(v/1000).toFixed(0)}K`} />
             <YAxis
               type="category"
-              dataKey="broker"
+              dataKey="shortName"
               stroke="#64748b"
-              fontSize={11}
-              width={100}
+              fontSize={10}
+              width={140}
               tick={{ fill: '#94a3b8' }}
             />
             <Tooltip

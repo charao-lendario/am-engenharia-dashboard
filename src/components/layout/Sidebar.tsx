@@ -1,21 +1,21 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
+  TrendingUp,
   Users,
-  UserX,
-  Trophy,
-  Target,
+  Briefcase,
+  Building2,
   FileSpreadsheet,
   X,
 } from 'lucide-react';
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Visão Geral' },
-  { to: '/clientes', icon: Users, label: 'Imobiliárias por Ano' },
-  { to: '/nao-retornaram', icon: UserX, label: 'Não Retornaram' },
-  { to: '/imobiliarias', icon: Trophy, label: 'Ranking de Vendas' },
-  { to: '/vendas-diretas', icon: Target, label: 'Vendas Diretas' },
-  { to: '/contratos', icon: FileSpreadsheet, label: 'Todos os Contratos' },
+  { to: '/faturamento', icon: TrendingUp, label: 'Faturamento' },
+  { to: '/clientes', icon: Users, label: 'Clientes' },
+  { to: '/atividades', icon: Briefcase, label: 'Atividades' },
+  { to: '/empresas', icon: Building2, label: 'Empresas' },
+  { to: '/notas', icon: FileSpreadsheet, label: 'Todas as NFS-e' },
 ];
 
 interface SidebarProps {

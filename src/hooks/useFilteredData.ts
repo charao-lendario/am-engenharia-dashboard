@@ -1,49 +1,49 @@
 import { useMemo } from 'react';
 import { useFilterContext } from '../context/FilterContext';
-import contractsData from '../data/contracts.json';
-import type { Contract } from '../types';
+import invoicesData from '../data/invoices.json';
+import type { Invoice } from '../types';
 
-const allContracts = contractsData as Contract[];
+const allInvoices = invoicesData as Invoice[];
 
 export function useFilteredData() {
   const { state } = useFilterContext();
 
   const filtered = useMemo(() => {
-    let result = allContracts;
+    let result = allInvoices;
 
     if (!state.includeCancelled) {
-      result = result.filter(c => !c.cancelled);
+      result = result.filter(i => !i.cancelled);
     }
 
     if (state.years.length > 0) {
-      result = result.filter(c => state.years.includes(c.year));
+      result = result.filter(i => state.years.includes(i.year));
     }
 
-    if (state.empreendimentos.length > 0) {
-      result = result.filter(c => state.empreendimentos.includes(c.empreendimento));
+    if (state.empresas.length > 0) {
+      result = result.filter(i => state.empresas.includes(i.empresa));
     }
 
-    if (state.brokers.length > 0) {
-      result = result.filter(c => state.brokers.includes(c.broker));
+    if (state.clientes.length > 0) {
+      result = result.filter(i => state.clientes.includes(i.clientName));
     }
 
     return result;
   }, [state]);
 
   const allYears = useMemo(() =>
-    [...new Set(allContracts.map(c => c.year))].sort(),
+    [...new Set(allInvoices.map(i => i.year))].sort(),
     []
   );
 
-  const allEmpreendimentos = useMemo(() =>
-    [...new Set(allContracts.map(c => c.empreendimento))].sort(),
+  const allEmpresas = useMemo(() =>
+    [...new Set(allInvoices.map(i => i.empresa))].sort(),
     []
   );
 
-  const allBrokers = useMemo(() =>
-    [...new Set(allContracts.filter(c => !c.isDirect && c.broker).map(c => c.broker))].sort(),
+  const allClientes = useMemo(() =>
+    [...new Set(allInvoices.map(i => i.clientName))].sort(),
     []
   );
 
-  return { contracts: filtered, allContracts, allYears, allEmpreendimentos, allBrokers };
+  return { invoices: filtered, allInvoices, allYears, allEmpresas, allClientes };
 }

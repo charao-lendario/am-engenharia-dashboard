@@ -1,50 +1,39 @@
 import { useMemo } from 'react';
-import type { Contract, DashboardStats } from '../types';
+import type { Invoice, DashboardStats } from '../types';
 import { monthlyTrend } from '../utils/dataTransformers';
 
-export function useDashboardStats(contracts: Contract[]): DashboardStats {
+export function useDashboardStats(invoices: Invoice[]): DashboardStats {
   return useMemo(() => {
-    const active = contracts.filter(c => !c.cancelled);
-    const totalValue = active.reduce((s, c) => s + c.totalValue, 0);
-    const totalArea = active.reduce((s, c) => s + c.area, 0);
-    const direct = active.filter(c => c.isDirect);
-    const directValue = direct.reduce((s, c) => s + c.totalValue, 0);
+    const active = invoices.filter(i => !i.cancelled);
+    const totalValue = active.reduce((s, i) => s + i.totalValue, 0);
+    const totalISS = active.reduce((s, i) => s + i.valorISS, 0);
 
-    const contractsByYear: Record<number, number> = {};
+    const invoicesByYear: Record<number, number> = {};
     const valueByYear: Record<number, number> = {};
-    for (const c of active) {
-      contractsByYear[c.year] = (contractsByYear[c.year] ?? 0) + 1;
-      valueByYear[c.year] = (valueByYear[c.year] ?? 0) + c.totalValue;
+    for (const i of active) {
+      invoicesByYear[i.year] = (invoicesByYear[i.year] ?? 0) + 1;
+      valueByYear[i.year] = (valueByYear[i.year] ?? 0) + i.totalValue;
     }
 
-    const withArea = active.filter(c => c.area > 0);
-    const avgPricePerM2 = withArea.length > 0
-      ? withArea.reduce((s, c) => s + c.totalValue, 0) / withArea.reduce((s, c) => s + c.area, 0)
-      : 0;
-
-    const brokerMap: Record<string, { count: number; value: number }> = {};
-    for (const c of active) {
-      const name = c.broker || 'Direta';
-      if (!brokerMap[name]) brokerMap[name] = { count: 0, value: 0 };
-      brokerMap[name].count += 1;
-      brokerMap[name].value += c.totalValue;
+    const empresaMap: Record<string, { count: number; value: number }> = {};
+    for (const i of active) {
+      if (!empresaMap[i.empresa]) empresaMap[i.empresa] = { count: 0, value: 0 };
+      empresaMap[i.empresa].count += 1;
+      empresaMap[i.empresa].value += i.totalValue;
     }
-    const salesByBroker = Object.entries(brokerMap)
-      .map(([broker, data]) => ({ broker, ...data }))
+    const byEmpresa = Object.entries(empresaMap)
+      .map(([empresa, data]) => ({ empresa, ...data }))
       .sort((a, b) => b.value - a.value);
 
     return {
-      totalContracts: active.length,
+      totalInvoices: active.length,
       totalValue,
-      directSalesCount: direct.length,
-      directSalesValue: directValue,
-      directSalesPercent: active.length > 0 ? (direct.length / active.length) * 100 : 0,
-      totalArea,
-      avgPricePerM2,
-      contractsByYear,
+      totalISS,
+      cancelledCount: invoices.length - active.length,
+      invoicesByYear,
       valueByYear,
-      salesByBroker,
+      byEmpresa,
       monthlyTrend: monthlyTrend(active),
     };
-  }, [contracts]);
+  }, [invoices]);
 }

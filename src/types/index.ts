@@ -1,59 +1,62 @@
-export interface Contract {
+export interface Invoice {
   id: string;
-  contractNumber: string;
+  nfsNumber: string;
   date: string;
-  clientId: string;
-  clientName: string;
-  broker: string;
-  totalValue: number;
-  area: number;
-  pricePerM2: number;
-  unit: string;
-  saleCategory: string;
-  financingStatus: string;
-  keyDelivery: string;
-  empresa: string;
-  empreendimento: string;
-  cancelled: boolean;
-  isDirect: boolean;
   year: number;
   month: number;
+  atividade: string;
+  clientCnpj: string;
+  clientName: string;
+  totalValue: number;
+  valorDeducao: number;
+  valorBase: number;
+  aliquota: number;
+  valorISS: number;
+  retido: boolean;
+  status: string;
+  localRecolhimento: string;
+  empresa: string;
+  cancelled: boolean;
+}
+
+export interface Client {
+  razao: string;
+  descricao: string;
+  cnpj: string;
 }
 
 export interface FilterState {
   years: number[];
-  empreendimentos: string[];
-  brokers: string[];
+  empresas: string[];
+  clientes: string[];
   includeCancelled: boolean;
 }
 
 export type FilterAction =
   | { type: 'TOGGLE_YEAR'; year: number }
   | { type: 'SET_YEARS'; years: number[] }
-  | { type: 'TOGGLE_EMPREENDIMENTO'; empreendimento: string }
-  | { type: 'SET_EMPREENDIMENTOS'; empreendimentos: string[] }
-  | { type: 'TOGGLE_BROKER'; broker: string }
-  | { type: 'SET_BROKERS'; brokers: string[] }
+  | { type: 'TOGGLE_EMPRESA'; empresa: string }
+  | { type: 'SET_EMPRESAS'; empresas: string[] }
+  | { type: 'TOGGLE_CLIENTE'; cliente: string }
+  | { type: 'SET_CLIENTES'; clientes: string[] }
   | { type: 'TOGGLE_CANCELLED' }
   | { type: 'RESET' };
 
 export interface DashboardStats {
-  totalContracts: number;
+  totalInvoices: number;
   totalValue: number;
-  directSalesCount: number;
-  directSalesValue: number;
-  directSalesPercent: number;
-  totalArea: number;
-  avgPricePerM2: number;
-  contractsByYear: Record<number, number>;
+  totalISS: number;
+  cancelledCount: number;
+  invoicesByYear: Record<number, number>;
   valueByYear: Record<number, number>;
-  salesByBroker: { broker: string; count: number; value: number }[];
+  byEmpresa: { empresa: string; count: number; value: number }[];
   monthlyTrend: { month: number; year: number; count: number; value: number }[];
 }
 
-export interface AgencyRanking {
-  broker: string;
-  contractCount: number;
+export interface ClientRanking {
+  client: string;
+  cnpj: string;
+  invoiceCount: number;
   totalValue: number;
   avgValue: number;
 }

@@ -8,7 +8,7 @@ interface Props {
 }
 
 export function SalesByYearChart({ stats }: Props) {
-  const data = Object.entries(stats.contractsByYear)
+  const data = Object.entries(stats.invoicesByYear)
     .map(([year, count]) => ({
       year: Number(year),
       count,
@@ -22,7 +22,7 @@ export function SalesByYearChart({ stats }: Props) {
 
   return (
     <div className="bg-navy-800 rounded-xl border border-navy-600 p-5">
-      <h3 className="text-sm font-semibold text-white mb-4">Contratos por Ano</h3>
+      <h3 className="text-sm font-semibold text-white mb-4">NFS-e por Ano</h3>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} barSize={40}>
@@ -35,7 +35,7 @@ export function SalesByYearChart({ stats }: Props) {
               itemStyle={{ color: '#e2e8f0' }}
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               formatter={(value: any, name: any) => {
-                if (name === 'count') return [value, 'Contratos'];
+                if (name === 'count') return [value, 'NFS-e'];
                 return [formatCurrency(value), 'Valor'];
               }}
             />
@@ -47,7 +47,7 @@ export function SalesByYearChart({ stats }: Props) {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <div className="flex justify-center gap-6 mt-3">
+      <div className="flex justify-center gap-4 mt-3 flex-wrap">
         {data.map(d => (
           <div key={d.year} className="text-center">
             <div className="flex items-center gap-1.5">

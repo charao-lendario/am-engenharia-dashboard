@@ -1,4 +1,4 @@
-import { FileText, DollarSign, Target, ShoppingCart, Building } from 'lucide-react';
+import { FileText, DollarSign, Receipt, Building2, XCircle } from 'lucide-react';
 import { StatCard } from './StatCard';
 import { formatCurrency } from '../../utils/formatters';
 import type { DashboardStats } from '../../types';
@@ -8,13 +8,11 @@ interface StatCardGridProps {
 }
 
 export function StatCardGrid({ stats }: StatCardGridProps) {
-  const brokerSalesCount = stats.totalContracts - stats.directSalesCount;
-
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
       <StatCard
-        title="Total de Contratos"
-        value={String(stats.totalContracts)}
+        title="Total de NFS-e"
+        value={String(stats.totalInvoices)}
         icon={FileText}
         color="text-gold-400"
       />
@@ -25,22 +23,23 @@ export function StatCardGrid({ stats }: StatCardGridProps) {
         color="text-emerald"
       />
       <StatCard
-        title="Vendas Diretas"
-        value={String(stats.directSalesCount)}
-        icon={Target}
+        title="ISS Total"
+        value={formatCurrency(stats.totalISS)}
+        icon={Receipt}
         color="text-teal"
       />
       <StatCard
-        title="Total de Vendas"
-        value={String(stats.totalContracts)}
-        icon={ShoppingCart}
+        title="Empresas"
+        value={String(stats.byEmpresa.length)}
+        subtitle={stats.byEmpresa.map(e => `${e.empresa}: ${e.count}`).join(' | ')}
+        icon={Building2}
         color="text-amber"
       />
       <StatCard
-        title="Vendas por Imobiliária"
-        value={String(brokerSalesCount)}
-        icon={Building}
-        color="text-blue-400"
+        title="Canceladas"
+        value={String(stats.cancelledCount)}
+        icon={XCircle}
+        color="text-coral"
       />
     </div>
   );

@@ -10,6 +10,8 @@ export const CHART_COLORS = [
 ];
 
 export const YEAR_COLORS: Record<number, string> = {
+  2021: '#818cf8',
+  2022: '#fb923c',
   2023: '#d4af37',
   2024: '#2dd4bf',
   2025: '#f87171',
