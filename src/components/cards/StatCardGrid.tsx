@@ -32,7 +32,7 @@ export function StatCardGrid({ stats }: StatCardGridProps) {
       />
       <StatCard
         title="Total de Vendas"
-        value={formatCurrency(stats.totalValue)}
+        value={String(stats.totalContracts)}
         icon={ShoppingCart}
         color="text-amber"
       />

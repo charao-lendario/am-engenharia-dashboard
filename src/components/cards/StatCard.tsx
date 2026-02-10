@@ -14,7 +14,7 @@ export function StatCard({ title, value, subtitle, icon: Icon, color = 'text-gol
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <p className="text-xs text-gray-400 uppercase tracking-wider">{title}</p>
-          <p className={`text-2xl font-bold mt-1 truncate ${color}`}>{value}</p>
+          <p className={`text-xl font-bold mt-1 ${color}`}>{value}</p>
           {subtitle && (
             <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
           )}
