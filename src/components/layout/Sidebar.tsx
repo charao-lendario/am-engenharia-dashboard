@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   Users,
+  CalendarRange,
   UserX,
   Trophy,
   Building2,
@@ -12,6 +13,7 @@ import {
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Visão Geral' },
   { to: '/clientes', icon: Users, label: 'Clientes por Ano' },
+  { to: '/historico', icon: CalendarRange, label: 'Histórico de Atividade' },
   { to: '/nao-retornaram', icon: UserX, label: 'Não Retornaram' },
   { to: '/ranking', icon: Trophy, label: 'Ranking de Clientes' },
   { to: '/empresas', icon: Building2, label: 'Por Empresa' },

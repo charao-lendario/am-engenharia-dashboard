@@ -7,6 +7,7 @@ import { ClientsNotReturningView } from './components/views/ClientsNotReturningV
 import { AgencyRankingView } from './components/views/AgencyRankingView';
 import { DirectSalesView } from './components/views/DirectSalesView';
 import { ProductsView } from './components/views/ProductsView';
+import { ClientLifecycleView } from './components/views/ClientLifecycleView';
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
           <Route element={<DashboardLayout />}>
             <Route path="/" element={<OverviewView />} />
             <Route path="/clientes" element={<ClientAnalysisView />} />
+            <Route path="/historico" element={<ClientLifecycleView />} />
             <Route path="/nao-retornaram" element={<ClientsNotReturningView />} />
             <Route path="/ranking" element={<AgencyRankingView />} />
             <Route path="/empresas" element={<DirectSalesView />} />

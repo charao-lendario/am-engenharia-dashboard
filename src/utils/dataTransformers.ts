@@ -65,6 +65,84 @@ export function empresaSummary(sales: Sale[]) {
     .sort((a, b) => b.value - a.value);
 }
 
+export type ClientYearStatus = 'novo' | 'ativo' | 'reativado' | 'inativo' | null;
+
+export interface ClientLifecycleRow {
+  clientName: string;
+  clientCnpj: string;
+  statuses: Record<number, ClientYearStatus>;
+  totalValue: Record<number, number>;
+  salesCount: Record<number, number>;
+  firstYear: number;
+  lastYear: number;
+}
+
+export function clientLifecycleTable(sales: Sale[], years: number[]): ClientLifecycleRow[] {
+  const active = sales.filter(s => !s.cancelled);
+  const clientMap = new Map<string, {
+    name: string;
+    cnpj: string;
+    yearSet: Set<number>;
+    valueByYear: Record<number, number>;
+    countByYear: Record<number, number>;
+  }>();
+
+  for (const s of active) {
+    const key = s.clientCnpj;
+    if (!clientMap.has(key)) {
+      clientMap.set(key, {
+        name: s.clientName,
+        cnpj: s.clientCnpj,
+        yearSet: new Set(),
+        valueByYear: {},
+        countByYear: {},
+      });
+    }
+    const entry = clientMap.get(key)!;
+    entry.yearSet.add(s.year);
+    entry.valueByYear[s.year] = (entry.valueByYear[s.year] ?? 0) + s.totalValue;
+    entry.countByYear[s.year] = (entry.countByYear[s.year] ?? 0) + 1;
+  }
+
+  const rows: ClientLifecycleRow[] = [];
+
+  for (const [, entry] of clientMap) {
+    const sortedYears = [...entry.yearSet].sort();
+    const firstYear = sortedYears[0];
+    const lastYear = sortedYears[sortedYears.length - 1];
+    const statuses: Record<number, ClientYearStatus> = {};
+
+    for (const year of years) {
+      const bought = entry.yearSet.has(year);
+
+      if (year < firstYear) {
+        statuses[year] = null;
+      } else if (bought) {
+        if (year === firstYear) {
+          statuses[year] = 'novo';
+        } else {
+          const prevBought = entry.yearSet.has(year - 1);
+          statuses[year] = prevBought ? 'ativo' : 'reativado';
+        }
+      } else {
+        statuses[year] = 'inativo';
+      }
+    }
+
+    rows.push({
+      clientName: entry.name,
+      clientCnpj: entry.cnpj,
+      statuses,
+      totalValue: entry.valueByYear,
+      salesCount: entry.countByYear,
+      firstYear,
+      lastYear,
+    });
+  }
+
+  return rows.sort((a, b) => a.clientName.localeCompare(b.clientName));
+}
+
 export function monthlyTrend(sales: Sale[]) {
   const map = new Map<string, { month: number; year: number; count: number; value: number }>();
 
