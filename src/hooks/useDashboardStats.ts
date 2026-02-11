@@ -1,39 +1,67 @@
 import { useMemo } from 'react';
-import type { Invoice, DashboardStats } from '../types';
+import type { Sale, DashboardStats } from '../types';
 import { monthlyTrend } from '../utils/dataTransformers';
 
-export function useDashboardStats(invoices: Invoice[]): DashboardStats {
+export function useDashboardStats(sales: Sale[]): DashboardStats {
   return useMemo(() => {
-    const active = invoices.filter(i => !i.cancelled);
+    const active = sales.filter(s => !s.cancelled);
     const totalValue = active.reduce((s, i) => s + i.totalValue, 0);
-    const totalISS = active.reduce((s, i) => s + i.valorISS, 0);
+    const totalQuantity = active.reduce((s, i) => s + i.quantity, 0);
 
-    const invoicesByYear: Record<number, number> = {};
+    const salesByYear: Record<number, number> = {};
     const valueByYear: Record<number, number> = {};
-    for (const i of active) {
-      invoicesByYear[i.year] = (invoicesByYear[i.year] ?? 0) + 1;
-      valueByYear[i.year] = (valueByYear[i.year] ?? 0) + i.totalValue;
+    for (const s of active) {
+      salesByYear[s.year] = (salesByYear[s.year] ?? 0) + 1;
+      valueByYear[s.year] = (valueByYear[s.year] ?? 0) + s.totalValue;
     }
 
     const empresaMap: Record<string, { count: number; value: number }> = {};
-    for (const i of active) {
-      if (!empresaMap[i.empresa]) empresaMap[i.empresa] = { count: 0, value: 0 };
-      empresaMap[i.empresa].count += 1;
-      empresaMap[i.empresa].value += i.totalValue;
+    for (const s of active) {
+      if (!empresaMap[s.empresa]) empresaMap[s.empresa] = { count: 0, value: 0 };
+      empresaMap[s.empresa].count += 1;
+      empresaMap[s.empresa].value += s.totalValue;
     }
     const byEmpresa = Object.entries(empresaMap)
       .map(([empresa, data]) => ({ empresa, ...data }))
       .sort((a, b) => b.value - a.value);
 
+    const productMap: Record<string, { category: string; count: number; quantity: number; value: number }> = {};
+    for (const s of active) {
+      if (!productMap[s.productName]) {
+        productMap[s.productName] = { category: s.productCategory, count: 0, quantity: 0, value: 0 };
+      }
+      productMap[s.productName].count += 1;
+      productMap[s.productName].quantity += s.quantity;
+      productMap[s.productName].value += s.totalValue;
+    }
+    const byProduct = Object.entries(productMap)
+      .map(([productName, data]) => ({ productName, ...data }))
+      .sort((a, b) => b.value - a.value);
+
+    const categoryMap: Record<string, { count: number; quantity: number; value: number }> = {};
+    for (const s of active) {
+      if (!categoryMap[s.productCategory]) {
+        categoryMap[s.productCategory] = { count: 0, quantity: 0, value: 0 };
+      }
+      categoryMap[s.productCategory].count += 1;
+      categoryMap[s.productCategory].quantity += s.quantity;
+      categoryMap[s.productCategory].value += s.totalValue;
+    }
+    const byCategory = Object.entries(categoryMap)
+      .map(([category, data]) => ({ category, ...data }))
+      .sort((a, b) => b.value - a.value);
+
     return {
-      totalInvoices: active.length,
+      totalSales: active.length,
       totalValue,
-      totalISS,
-      cancelledCount: invoices.length - active.length,
-      invoicesByYear,
+      totalQuantity,
+      cancelledCount: sales.length - active.length,
+      salesByYear,
       valueByYear,
       byEmpresa,
+      byProduct,
+      byCategory,
       monthlyTrend: monthlyTrend(active),
     };
-  }, [invoices]);
+  }, [sales]);
 }

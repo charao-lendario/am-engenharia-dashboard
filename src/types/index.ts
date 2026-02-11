@@ -1,22 +1,25 @@
-export interface Invoice {
+export interface Sale {
   id: string;
-  nfsNumber: string;
   date: string;
   year: number;
   month: number;
-  atividade: string;
   clientCnpj: string;
   clientName: string;
+  productId: string;
+  productName: string;
+  productCategory: string;
+  quantity: number;
+  unitPrice: number;
   totalValue: number;
-  valorDeducao: number;
-  valorBase: number;
-  aliquota: number;
-  valorISS: number;
-  retido: boolean;
-  status: string;
-  localRecolhimento: string;
   empresa: string;
   cancelled: boolean;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  category: string;
+  unitPrice: number;
 }
 
 export interface Client {
@@ -29,6 +32,7 @@ export interface FilterState {
   years: number[];
   empresas: string[];
   clientes: string[];
+  produtos: string[];
   includeCancelled: boolean;
 }
 
@@ -39,24 +43,28 @@ export type FilterAction =
   | { type: 'SET_EMPRESAS'; empresas: string[] }
   | { type: 'TOGGLE_CLIENTE'; cliente: string }
   | { type: 'SET_CLIENTES'; clientes: string[] }
+  | { type: 'TOGGLE_PRODUTO'; produto: string }
+  | { type: 'SET_PRODUTOS'; produtos: string[] }
   | { type: 'TOGGLE_CANCELLED' }
   | { type: 'RESET' };
 
 export interface DashboardStats {
-  totalInvoices: number;
+  totalSales: number;
   totalValue: number;
-  totalISS: number;
+  totalQuantity: number;
   cancelledCount: number;
-  invoicesByYear: Record<number, number>;
+  salesByYear: Record<number, number>;
   valueByYear: Record<number, number>;
   byEmpresa: { empresa: string; count: number; value: number }[];
+  byProduct: { productName: string; category: string; count: number; quantity: number; value: number }[];
+  byCategory: { category: string; count: number; quantity: number; value: number }[];
   monthlyTrend: { month: number; year: number; count: number; value: number }[];
 }
 
 export interface ClientRanking {
   client: string;
   cnpj: string;
-  invoiceCount: number;
+  salesCount: number;
   totalValue: number;
   avgValue: number;
 }

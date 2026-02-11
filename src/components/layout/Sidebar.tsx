@@ -5,7 +5,7 @@ import {
   UserX,
   Trophy,
   Building2,
-  FileSpreadsheet,
+  Package,
   X,
 } from 'lucide-react';
 
@@ -15,7 +15,7 @@ const navItems = [
   { to: '/nao-retornaram', icon: UserX, label: 'Não Retornaram' },
   { to: '/ranking', icon: Trophy, label: 'Ranking de Clientes' },
   { to: '/empresas', icon: Building2, label: 'Por Empresa' },
-  { to: '/notas', icon: FileSpreadsheet, label: 'Todas as NFS-e' },
+  { to: '/produtos', icon: Package, label: 'Produtos' },
 ];
 
 interface SidebarProps {

@@ -6,11 +6,12 @@ import { RotateCcw, EyeOff, Eye } from 'lucide-react';
 
 export function FilterBar() {
   const { state, dispatch } = useFilterContext();
-  const { allYears, allEmpresas, allClientes } = useFilteredData();
+  const { allYears, allEmpresas, allClientes, allProdutos } = useFilteredData();
 
   const hasFilters = state.years.length > 0 ||
     state.empresas.length > 0 ||
     state.clientes.length > 0 ||
+    state.produtos.length > 0 ||
     state.includeCancelled;
 
   return (
@@ -30,6 +31,13 @@ export function FilterBar() {
           selected={state.clientes}
           onToggle={(v) => dispatch({ type: 'TOGGLE_CLIENTE', cliente: v })}
           onClear={() => dispatch({ type: 'SET_CLIENTES', clientes: [] })}
+        />
+        <MultiSelectFilter
+          label="Produto"
+          options={allProdutos}
+          selected={state.produtos}
+          onToggle={(v) => dispatch({ type: 'TOGGLE_PRODUTO', produto: v })}
+          onClear={() => dispatch({ type: 'SET_PRODUTOS', produtos: [] })}
         />
         <button
           onClick={() => dispatch({ type: 'TOGGLE_CANCELLED' })}

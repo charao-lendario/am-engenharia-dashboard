@@ -1,39 +1,39 @@
-import type { Invoice, ClientRanking } from '../types';
+import type { Sale, ClientRanking } from '../types';
 
-export function groupByYear(invoices: Invoice[]): Record<number, Invoice[]> {
-  return invoices.reduce((acc, i) => {
-    (acc[i.year] ??= []).push(i);
+export function groupByYear(sales: Sale[]): Record<number, Sale[]> {
+  return sales.reduce((acc, s) => {
+    (acc[s.year] ??= []).push(s);
     return acc;
-  }, {} as Record<number, Invoice[]>);
+  }, {} as Record<number, Sale[]>);
 }
 
-export function clientsByYear(invoices: Invoice[]): Record<number, Set<string>> {
-  const byYear = groupByYear(invoices);
+export function clientsByYear(sales: Sale[]): Record<number, Set<string>> {
+  const byYear = groupByYear(sales);
   const result: Record<number, Set<string>> = {};
-  for (const [year, invs] of Object.entries(byYear)) {
-    result[Number(year)] = new Set(invs.map(i => i.clientCnpj));
+  for (const [year, items] of Object.entries(byYear)) {
+    result[Number(year)] = new Set(items.map(s => s.clientCnpj));
   }
   return result;
 }
 
-export function clientsInANotB(invoices: Invoice[], yearA: number, yearB: number): Invoice[] {
-  const byYear = clientsByYear(invoices);
+export function clientsInANotB(sales: Sale[], yearA: number, yearB: number): Sale[] {
+  const byYear = clientsByYear(sales);
   const clientsA = byYear[yearA] ?? new Set();
   const clientsB = byYear[yearB] ?? new Set();
   const notReturned = new Set([...clientsA].filter(cnpj => !clientsB.has(cnpj)));
 
-  return invoices.filter(i => i.year === yearA && notReturned.has(i.clientCnpj));
+  return sales.filter(s => s.year === yearA && notReturned.has(s.clientCnpj));
 }
 
-export function clientRanking(invoices: Invoice[]): ClientRanking[] {
-  const active = invoices.filter(i => !i.cancelled);
+export function clientRanking(sales: Sale[]): ClientRanking[] {
+  const active = sales.filter(s => !s.cancelled);
   const clientMap = new Map<string, { cnpj: string; count: number; value: number }>();
 
-  for (const i of active) {
-    const name = i.clientName || 'Desconhecido';
-    const entry = clientMap.get(name) ?? { cnpj: i.clientCnpj, count: 0, value: 0 };
+  for (const s of active) {
+    const name = s.clientName || 'Desconhecido';
+    const entry = clientMap.get(name) ?? { cnpj: s.clientCnpj, count: 0, value: 0 };
     entry.count++;
-    entry.value += i.totalValue;
+    entry.value += s.totalValue;
     clientMap.set(name, entry);
   }
 
@@ -41,24 +41,23 @@ export function clientRanking(invoices: Invoice[]): ClientRanking[] {
     .map(([client, { cnpj, count, value }]) => ({
       client,
       cnpj,
-      invoiceCount: count,
+      salesCount: count,
       totalValue: value,
       avgValue: value / count,
     }))
     .sort((a, b) => b.totalValue - a.totalValue);
 }
 
-export function empresaSummary(invoices: Invoice[]) {
-  const active = invoices.filter(i => !i.cancelled);
-  const empresaMap = new Map<string, { count: number; value: number; iss: number; invoices: Invoice[] }>();
+export function empresaSummary(sales: Sale[]) {
+  const active = sales.filter(s => !s.cancelled);
+  const empresaMap = new Map<string, { count: number; value: number; sales: Sale[] }>();
 
-  for (const i of active) {
-    const entry = empresaMap.get(i.empresa) ?? { count: 0, value: 0, iss: 0, invoices: [] };
+  for (const s of active) {
+    const entry = empresaMap.get(s.empresa) ?? { count: 0, value: 0, sales: [] };
     entry.count++;
-    entry.value += i.totalValue;
-    entry.iss += i.valorISS;
-    entry.invoices.push(i);
-    empresaMap.set(i.empresa, entry);
+    entry.value += s.totalValue;
+    entry.sales.push(s);
+    empresaMap.set(s.empresa, entry);
   }
 
   return Array.from(empresaMap.entries())
@@ -66,22 +65,18 @@ export function empresaSummary(invoices: Invoice[]) {
     .sort((a, b) => b.value - a.value);
 }
 
-export function monthlyTrend(invoices: Invoice[]) {
+export function monthlyTrend(sales: Sale[]) {
   const map = new Map<string, { month: number; year: number; count: number; value: number }>();
 
-  for (const i of invoices) {
-    const key = `${i.year}-${String(i.month).padStart(2, '0')}`;
-    const entry = map.get(key) ?? { month: i.month, year: i.year, count: 0, value: 0 };
+  for (const s of sales) {
+    const key = `${s.year}-${String(s.month).padStart(2, '0')}`;
+    const entry = map.get(key) ?? { month: s.month, year: s.year, count: 0, value: 0 };
     entry.count++;
-    entry.value += i.totalValue;
+    entry.value += s.totalValue;
     map.set(key, entry);
   }
 
   return Array.from(map.values()).sort((a, b) =>
     a.year !== b.year ? a.year - b.year : a.month - b.month
   );
-}
-
-export function uniqueValues<T>(invoices: Invoice[], key: keyof Invoice): T[] {
-  return [...new Set(invoices.map(i => i[key]))] as T[];
 }

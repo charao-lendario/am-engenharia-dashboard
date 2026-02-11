@@ -1,0 +1,92 @@
+[
+  {
+    "id": "pgr",
+    "name": "PGR - Programa de Gerenciamento de Riscos",
+    "category": "Segurança do Trabalho",
+    "unitPrice": 4500
+  },
+  {
+    "id": "pcmso",
+    "name": "PCMSO - Programa de Controle Médico",
+    "category": "Segurança do Trabalho",
+    "unitPrice": 3800
+  },
+  {
+    "id": "apr",
+    "name": "APR - Análise Preliminar de Riscos",
+    "category": "Segurança do Trabalho",
+    "unitPrice": 2500
+  },
+  {
+    "id": "ltcat",
+    "name": "LTCAT - Laudo Técnico Ambiental",
+    "category": "Laudos Técnicos",
+    "unitPrice": 5500
+  },
+  {
+    "id": "laudo-insalubridade",
+    "name": "Laudo de Insalubridade",
+    "category": "Laudos Técnicos",
+    "unitPrice": 4000
+  },
+  {
+    "id": "laudo-periculosidade",
+    "name": "Laudo de Periculosidade",
+    "category": "Laudos Técnicos",
+    "unitPrice": 4000
+  },
+  {
+    "id": "nr10",
+    "name": "Treinamento NR-10",
+    "category": "Treinamentos",
+    "unitPrice": 800
+  },
+  {
+    "id": "nr35",
+    "name": "Treinamento NR-35",
+    "category": "Treinamentos",
+    "unitPrice": 750
+  },
+  {
+    "id": "nr12",
+    "name": "Treinamento NR-12",
+    "category": "Treinamentos",
+    "unitPrice": 850
+  },
+  {
+    "id": "nr33",
+    "name": "Treinamento NR-33",
+    "category": "Treinamentos",
+    "unitPrice": 900
+  },
+  {
+    "id": "proj-eletrico",
+    "name": "Projeto Elétrico",
+    "category": "Engenharia",
+    "unitPrice": 8000
+  },
+  {
+    "id": "proj-spda",
+    "name": "Projeto de SPDA",
+    "category": "Engenharia",
+    "unitPrice": 6500
+  },
+  {
+    "id": "art",
+    "name": "ART - Anotação de Responsabilidade Técnica",
+    "category": "Engenharia",
+    "unitPrice": 1200
+  },
+  {
+    "id": "consultoria-sst",
+    "name": "Consultoria em Segurança do Trabalho",
+    "category": "Consultoria",
+    "unitPrice": 3500
+  },
+  {
+    "id": "assessoria-ambiental",
+    "name": "Assessoria Técnica Ambiental",
+    "category": "Consultoria",
+    "unitPrice": 4200
+  }
+]

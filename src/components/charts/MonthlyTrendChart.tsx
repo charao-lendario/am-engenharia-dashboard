@@ -43,7 +43,7 @@ export function MonthlyTrendChart({ stats }: Props) {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               formatter={(value: any, name: any) => {
                 if (name === 'value') return [formatCurrency(value), 'Valor'];
-                return [value, 'NFS-e'];
+                return [value, 'Vendas'];
               }}
             />
             <Line

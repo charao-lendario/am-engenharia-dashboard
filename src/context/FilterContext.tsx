@@ -5,6 +5,7 @@ const initialState: FilterState = {
   years: [],
   empresas: [],
   clientes: [],
+  produtos: [],
   includeCancelled: false,
 };
 
@@ -34,6 +35,14 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
     }
     case 'SET_CLIENTES':
       return { ...state, clientes: action.clientes };
+    case 'TOGGLE_PRODUTO': {
+      const produtos = state.produtos.includes(action.produto)
+        ? state.produtos.filter(p => p !== action.produto)
+        : [...state.produtos, action.produto];
+      return { ...state, produtos };
+    }
+    case 'SET_PRODUTOS':
+      return { ...state, produtos: action.produtos };
     case 'TOGGLE_CANCELLED':
       return { ...state, includeCancelled: !state.includeCancelled };
     case 'RESET':

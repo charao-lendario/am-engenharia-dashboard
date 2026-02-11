@@ -17,7 +17,6 @@ export function ClientRankingChart({ data }: Props) {
     );
   }
 
-  // Shorten long names for chart display
   const shortened = chartData.map(d => ({
     ...d,
     shortName: d.client.length > 25 ? d.client.slice(0, 22) + '...' : d.client,
@@ -25,7 +24,7 @@ export function ClientRankingChart({ data }: Props) {
 
   return (
     <div className="bg-navy-800 rounded-xl border border-navy-600 p-5">
-      <h3 className="text-sm font-semibold text-white mb-4">Top 10 Clientes por Valor Total</h3>
+      <h3 className="text-sm font-semibold text-white mb-4">Top 10 Clientes por Faturamento</h3>
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={shortened} layout="vertical" margin={{ left: 10 }}>
@@ -44,7 +43,7 @@ export function ClientRankingChart({ data }: Props) {
               labelStyle={{ color: '#e2e8f0' }}
               itemStyle={{ color: '#e2e8f0' }}
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              formatter={(value: any) => [formatCurrency(value), 'Valor Total']}
+              formatter={(value: any) => [formatCurrency(value), 'Faturamento']}
               labelFormatter={(label) => String(label)}
             />
             <Bar dataKey="totalValue" fill="#d4af37" radius={[0, 4, 4, 0]} barSize={20} />

@@ -1,4 +1,4 @@
-import { FileText, DollarSign, Receipt, Building2, XCircle } from 'lucide-react';
+import { ShoppingCart, DollarSign, Package, Building2, TrendingUp } from 'lucide-react';
 import { StatCard } from './StatCard';
 import { formatCurrency } from '../../utils/formatters';
 import type { DashboardStats } from '../../types';
@@ -8,24 +8,27 @@ interface StatCardGridProps {
 }
 
 export function StatCardGrid({ stats }: StatCardGridProps) {
+  const topProduct = stats.byProduct[0];
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
       <StatCard
-        title="Total de NFS-e"
-        value={String(stats.totalInvoices)}
-        icon={FileText}
+        title="Total de Vendas"
+        value={String(stats.totalSales)}
+        icon={ShoppingCart}
         color="text-gold-400"
       />
       <StatCard
-        title="Valor Total"
+        title="Faturamento"
         value={formatCurrency(stats.totalValue)}
         icon={DollarSign}
         color="text-emerald"
       />
       <StatCard
-        title="ISS Total"
-        value={formatCurrency(stats.totalISS)}
-        icon={Receipt}
+        title="Produtos Vendidos"
+        value={String(stats.byProduct.length)}
+        subtitle={`${stats.totalQuantity} unidades`}
+        icon={Package}
         color="text-teal"
       />
       <StatCard
@@ -36,9 +39,10 @@ export function StatCardGrid({ stats }: StatCardGridProps) {
         color="text-amber"
       />
       <StatCard
-        title="Canceladas"
-        value={String(stats.cancelledCount)}
-        icon={XCircle}
+        title="Mais Vendido"
+        value={topProduct ? String(topProduct.count) : '0'}
+        subtitle={topProduct?.productName ?? '-'}
+        icon={TrendingUp}
         color="text-coral"
       />
     </div>
