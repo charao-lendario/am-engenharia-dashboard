@@ -4,7 +4,7 @@ import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { FilterBar } from '../filters/FilterBar';
 
-const ROUTES_WITH_FILTERS = ['/', '/faturamento', '/clientes', '/atividades', '/empresas', '/notas'];
+const ROUTES_WITH_FILTERS = ['/', '/clientes', '/ranking', '/empresas', '/notas'];
 
 export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);

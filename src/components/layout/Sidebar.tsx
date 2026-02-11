@@ -1,9 +1,9 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
-  TrendingUp,
   Users,
-  Briefcase,
+  UserX,
+  Trophy,
   Building2,
   FileSpreadsheet,
   X,
@@ -11,10 +11,10 @@ import {
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Visão Geral' },
-  { to: '/faturamento', icon: TrendingUp, label: 'Faturamento' },
-  { to: '/clientes', icon: Users, label: 'Clientes' },
-  { to: '/atividades', icon: Briefcase, label: 'Atividades' },
-  { to: '/empresas', icon: Building2, label: 'Empresas' },
+  { to: '/clientes', icon: Users, label: 'Clientes por Ano' },
+  { to: '/nao-retornaram', icon: UserX, label: 'Não Retornaram' },
+  { to: '/ranking', icon: Trophy, label: 'Ranking de Clientes' },
+  { to: '/empresas', icon: Building2, label: 'Por Empresa' },
   { to: '/notas', icon: FileSpreadsheet, label: 'Todas as NFS-e' },
 ];
 
